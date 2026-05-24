@@ -146,16 +146,25 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
     };
   }, [handleUnlockClick]);
 
+  const clickRatio = clicks > 0 ? Math.min(1, clicks / targetClicks) : 0;
+  const pulseR = Math.round(251 - (251 - 225) * clickRatio);
+  const pulseG = Math.round(113 - (113 - 29) * clickRatio);
+  const pulseB = Math.round(133 - (133 - 72) * clickRatio);
 
   return (
-    <div 
-      ref={containerRef}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.05 }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
+      ref={containerRef as any}
       tabIndex={0}
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden backdrop-blur-sm transition-colors duration-500 focus:outline-none"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden backdrop-blur-sm focus:outline-none"
       style={{
         backgroundColor: phase === 'lock' 
           ? `rgba(255, 241, 242, ${0.95 - (clicks / targetClicks) * 0.2})` 
-          : 'rgba(255, 241, 242, 0.95)'
+          : 'rgba(255, 241, 242, 0.95)',
+        transition: 'background-color 0.5s'
       }}
     >
       {/* Dynamic background glow */}
@@ -221,7 +230,7 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
               />
             </div>
             <p className="text-rose-600/80 font-mono text-sm">
-              Analyzing vibe ({progress}%)
+              Finding the right one...
             </p>
           </motion.div>
         )}
@@ -257,27 +266,46 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
             className={`flex flex-col items-center gap-6 z-20 max-w-sm w-full p-8 bg-white/70 backdrop-blur-md border ${isPressing || pulseAnim ? 'border-rose-300' : 'border-rose-100'} rounded-[2rem] text-center mx-4 transition-colors duration-300 relative overflow-hidden`}
           >
             {/* Background Heartbeat EKG */}
-            <div className="absolute inset-0 flex items-center justify-center text-rose-300 opacity-20 pointer-events-none z-0 overflow-hidden rounded-[2rem]">
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full stroke-current fill-none">
-                {isPressing || pulseAnim ? (
-                  <motion.path
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M 0 50 L 30 50 L 35 25 L 45 80 L 55 10 L 65 70 L 70 50 L 100 50"
-                    initial={{ pathLength: 0, opacity: 0 }}
-                    animate={{ pathLength: [0, 1], opacity: [0, 1, 1, 0] }}
-                    transition={{ duration: 0.8, ease: "linear" }}
-                    className="drop-shadow-[0_0_8px_rgba(244,63,94,0.8)]"
-                  />
-                ) : (
-                  <motion.path
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    d="M 0 50 L 100 50"
-                    opacity={0.5}
-                  />
-                )}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden rounded-[2rem]">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full fill-none">
+                {/* Heartbeat path with trail - always mounted to prevent restart */}
+                <motion.path
+                  stroke={`rgba(${pulseR}, ${pulseG}, ${pulseB}, 0.3)`}
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M 0 50 L 30 50 L 35 25 L 45 80 L 55 10 L 65 70 L 70 50 L 100 50"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 1, 1], opacity: clicks > 0 || isPressing ? [0.6, 0.6, 0] : 0 }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  style={{ filter: `drop-shadow(0 0 12px rgba(${pulseR}, ${pulseG}, ${pulseB}, 0.5))` }}
+                />
+                
+                {/* Heartbeat path lead pulse - always mounted */}
+                <motion.path
+                  stroke={`rgba(${pulseR}, ${pulseG}, ${pulseB}, 0.8)`}
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M 0 50 L 30 50 L 35 25 L 45 80 L 55 10 L 65 70 L 70 50 L 100 50"
+                  initial={{ pathLength: 0, pathOffset: 0 }}
+                  animate={{ 
+                    pathLength: [0, 0.2, 0.05], 
+                    pathOffset: [0, 0.8, 1], 
+                    opacity: clicks > 0 || isPressing ? [0, 1, 0] : 0 
+                  }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                  style={{ filter: `drop-shadow(0 0 8px rgba(${pulseR}, ${pulseG}, ${pulseB}, 1))` }}
+                />
+
+                {/* Flatline */}
+                <motion.path
+                  stroke={`rgba(${pulseR}, ${pulseG}, ${pulseB}, 0.4)`}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  d="M 0 50 L 100 50"
+                  animate={{ opacity: clicks > 0 || isPressing ? 0 : 0.5 }}
+                />
               </svg>
             </div>
 
@@ -331,6 +359,6 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 };
