@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { Heart, Sparkles, Mail, ChevronRight, ChevronLeft, BookHeart } from "lucide-react";
@@ -25,7 +25,9 @@ import generatedImage5 from "./assets/images/regenerated_image_1779458304356.jpg
 const LeftPageFrame = ({ children, isBlank }: { children: React.ReactNode, isBlank?: boolean }) => {
   if (isBlank) return <div className="w-full h-full bg-transparent" />;
   return (
-    <div className="w-full h-full bg-[#fdfbf7] rounded-l-sm md:rounded-l-md relative overflow-hidden shadow-[-1px_0_0_#e5ddd0,-2px_0_0_#fdfbf7,-3px_0_0_#e5ddd0,-4px_5px_15px_rgba(0,0,0,0.15)] border-l-2 border-y-2 border-rose-200 transform-gpu" style={{ maskImage: '-webkit-radial-gradient(white, black)' }}>
+    <div className="w-full h-full bg-[#fdfbf7] rounded-l-sm md:rounded-l-md relative overflow-hidden shadow-[-1px_0_0_#e5ddd0,-2px_0_0_#fdfbf7,-3px_0_0_#e5ddd0,-4px_0_0_#fdfbf7,-5px_0_0_#e5ddd0,-6px_0_0_#fdfbf7,-7px_0_0_#e5ddd0,-8px_0_0_#fdfbf7,-9px_0_0_#e5ddd0,-12px_15px_20px_rgba(0,0,0,0.15)] border-l border-y border-[#e5ddd0] transform-gpu" style={{ maskImage: '-webkit-radial-gradient(white, black)' }}>
+      {/* Page edge inner shadow */}
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-r from-black/5 to-transparent pointer-events-none z-10" />
       {/* Spine shadow and highlight */}
       <div className="absolute right-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-l from-[rgba(0,0,0,0.18)] via-[rgba(0,0,0,0.06)] to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 bottom-0 w-[2px] bg-white/60 shadow-[0_0_10px_rgba(255,255,255,1)] pointer-events-none z-10" />
@@ -37,7 +39,9 @@ const LeftPageFrame = ({ children, isBlank }: { children: React.ReactNode, isBla
 };
 
 const RightPageFrame = ({ children }: { children: React.ReactNode }) => (
-  <div className="w-full h-full bg-[#fdfbf7] rounded-r-sm md:rounded-r-md relative overflow-hidden shadow-[1px_0_0_#e5ddd0,2px_0_0_#fdfbf7,3px_0_0_#e5ddd0,4px_5px_15px_rgba(0,0,0,0.15)] border-r-2 border-y-2 border-rose-200 transform-gpu" style={{ maskImage: '-webkit-radial-gradient(white, black)' }}>
+  <div className="w-full h-full bg-[#fdfbf7] rounded-r-sm md:rounded-r-md relative overflow-hidden shadow-[1px_0_0_#e5ddd0,2px_0_0_#fdfbf7,3px_0_0_#e5ddd0,4px_0_0_#fdfbf7,5px_0_0_#e5ddd0,6px_0_0_#fdfbf7,7px_0_0_#e5ddd0,8px_0_0_#fdfbf7,9px_0_0_#e5ddd0,12px_15px_20px_rgba(0,0,0,0.15)] border-r border-y border-[#e5ddd0] transform-gpu" style={{ maskImage: '-webkit-radial-gradient(white, black)' }}>
+    {/* Page edge inner shadow */}
+    <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-l from-black/5 to-transparent pointer-events-none z-10" />
     {/* Spine shadow and highlight */}
     <div className="absolute left-0 top-0 bottom-0 w-12 md:w-24 bg-gradient-to-r from-[rgba(0,0,0,0.18)] via-[rgba(0,0,0,0.06)] to-transparent pointer-events-none z-10" />
     <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-white/60 shadow-[0_0_10px_rgba(255,255,255,1)] pointer-events-none z-10" />
@@ -47,14 +51,23 @@ const RightPageFrame = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-const ImageContent = ({ src }: { src: string }) => (
+const ImageContent = ({ src }: { src: string }) => {
+  const setZoomedImage = useAppStore(state => state.setZoomedImage);
+  return (
   <div className="w-full h-full p-4 md:p-8 flex items-center justify-center">
-    <div className="w-full h-full rounded-xl overflow-hidden shadow-inner border-2 border-rose-100 relative transform-gpu bg-rose-50/30" style={{ transform: 'translateZ(0)' }}>
+    <div 
+      className="w-full h-full rounded-xl overflow-hidden shadow-inner border-2 border-rose-100 relative transform-gpu bg-rose-50/30 cursor-pointer hover:opacity-90 transition-opacity" 
+      style={{ transform: 'translateZ(0)' }}
+      onClick={() => setZoomedImage(src)}
+    >
        <img src={src} alt="Memory" className="w-full h-full object-cover transform-gpu backface-hidden" style={{ WebkitBackfaceVisibility: 'hidden' }} />
        <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.15)] pointer-events-none" />
+       <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/20 transition-opacity">
+         <Sparkles className="w-8 h-8 text-white drop-shadow-md" />
+       </div>
     </div>
   </div>
-);
+)};
 
 const SPREADS = [
   { 
@@ -164,6 +177,9 @@ export const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isEnvelopeOpen = useAppStore((state) => state.isEnvelopeOpen);
+  const isUnlocked = useAppStore((state) => state.isUnlocked);
+  const zoomedImage = useAppStore((state) => state.zoomedImage);
+  const setZoomedImage = useAppStore((state) => state.setZoomedImage);
   
   const matchedIndex = SPREADS.findIndex(s => s.path === location.pathname);
   const targetIndex = matchedIndex === -1 ? 0 : matchedIndex;
@@ -195,24 +211,26 @@ export const Layout = () => {
       <KissRain active={showKissRain} />
 
       {/* Kiss Emoji Button Right Side */}
-      <div className="absolute right-4 md:right-8 lg:right-12 top-1/2 -translate-y-1/2 z-50">
-        <button 
-          onClick={() => {
-            setShowKissRain(true);
-            setTimeout(() => setShowKissRain(false), 3000); // Stop rain after 3s
-            if (targetIndex < SPREADS.length - 1) {
-              goToPage(targetIndex + 1);
-            } else {
-              goToPage(0);
-            }
-          }}
-          disabled={isFlipping}
-          className="text-5xl md:text-6xl filter drop-shadow-md hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
-          title="Next Page and Kiss Rain"
-        >
-          💋
-        </button>
-      </div>
+      {isUnlocked && (
+        <div className="absolute right-4 md:right-8 lg:right-12 top-1/2 -translate-y-1/2 z-50">
+          <button 
+            onClick={() => {
+              setShowKissRain(true);
+              setTimeout(() => setShowKissRain(false), 3000); // Stop rain after 3s
+              if (targetIndex < SPREADS.length - 1) {
+                goToPage(targetIndex + 1);
+              } else {
+                goToPage(0);
+              }
+            }}
+            disabled={isFlipping}
+            className="text-5xl md:text-6xl filter drop-shadow-md hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
+            title="Next Page and Kiss Rain"
+          >
+            💋
+          </button>
+        </div>
+      )}
 
       <div 
         className="relative flex z-10 perspective-[2500px] mt-4"
@@ -246,10 +264,10 @@ export const Layout = () => {
             initial={{ rotateY: 0, z: 0 }}
             animate={{ 
               rotateY: -180,
-              z: [0, 40, 0],
-              rotateX: [0, 2, 0]
+              z: [0, 80, 0],
+              rotateX: [0, 3, 0]
             }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
+            transition={{ duration: 1.4, ease: [0.645, 0.045, 0.355, 1.000] }}
             onAnimationComplete={() => {
                setRenderedSpread(targetIndex);
                setIsFlipping(false);
@@ -262,12 +280,26 @@ export const Layout = () => {
               <RightPageFrame>
                 {SPREADS[renderedSpread].right}
               </RightPageFrame>
+              {/* Dynamic shadow as it turns away */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-l from-black/0 to-black/20 pointer-events-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.4, ease: "easeIn" }}
+              />
             </div>
             {/* Back (New Left) */}
             <div className="absolute inset-0 backface-hidden shadow-[-20px_0_30px_rgba(0,0,0,0.15)] flex" style={{ transform: 'rotateY(180deg)' }}>
               <LeftPageFrame isBlank={SPREADS[targetIndex].left === null}>
                 {SPREADS[targetIndex].left}
               </LeftPageFrame>
+              {/* Dynamic shadow as it turns towards viewer */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-black/0 to-black/20 pointer-events-none"
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 0 }}
+                transition={{ duration: 1.4, ease: "easeOut" }}
+              />
             </div>
           </motion.div>
         )}
@@ -278,10 +310,10 @@ export const Layout = () => {
             initial={{ rotateY: 0, z: 0 }}
             animate={{ 
               rotateY: 180,
-              z: [0, 40, 0],
-              rotateX: [0, 2, 0]
+              z: [0, 80, 0],
+              rotateX: [0, 3, 0]
             }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
+            transition={{ duration: 1.4, ease: [0.645, 0.045, 0.355, 1.000] }}
             onAnimationComplete={() => {
                setRenderedSpread(targetIndex);
                setIsFlipping(false);
@@ -294,17 +326,56 @@ export const Layout = () => {
               <LeftPageFrame isBlank={SPREADS[renderedSpread].left === null}>
                 {SPREADS[renderedSpread].left}
               </LeftPageFrame>
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-black/0 to-black/20 pointer-events-none"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.4, ease: "easeIn" }}
+              />
             </div>
             {/* Back (New Right) */}
             <div className="absolute inset-0 backface-hidden shadow-[20px_0_30px_rgba(0,0,0,0.15)] flex" style={{ transform: 'rotateY(180deg)' }}>
               <RightPageFrame>
                 {SPREADS[targetIndex].right}
               </RightPageFrame>
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-l from-black/0 to-black/20 pointer-events-none"
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 0 }}
+                transition={{ duration: 1.4, ease: "easeOut" }}
+              />
             </div>
           </motion.div>
         )}
 
       </div>
+
+      <AnimatePresence>
+        {zoomedImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setZoomedImage(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-12 cursor-zoom-out"
+          >
+            <motion.img 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              src={zoomedImage} 
+              alt="Zoomed" 
+              className="max-w-full max-h-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/20" 
+            />
+            {/* Close instruction */}
+            <div className="absolute top-6 right-6 text-white/50 text-sm font-medium tracking-wider">
+              CLICK TO CLOSE
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 };
