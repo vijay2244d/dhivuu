@@ -3,16 +3,6 @@ import { motion } from "motion/react";
 export const Note = () => {
   return (
     <div className="w-full h-full max-w-sm mx-auto flex flex-col justify-center gap-6 p-4 md:p-8 overflow-hidden">
-      <div className="text-center shrink-0">
-        <motion.h1
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-2xl md:text-4xl font-bold text-rose-900 font-display"
-        >
-          The Future
-        </motion.h1>
-      </div>
-
       <div className="w-full relative flex-1 min-h-0 perspective-1000">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -29,7 +19,7 @@ export const Note = () => {
           
           <div className="relative z-10 w-full px-4">
             <p className="text-rose-800/90 text-lg md:text-xl font-medium leading-relaxed italic font-display" style={{ lineHeight: "32px", transform: "translateZ(10px)" }}>
-              The remaining page is to be written in the future by hand...
+              The remaining page is to be written in the future by our souls...
             </p>
           </div>
         </motion.div>

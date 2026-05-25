@@ -46,7 +46,7 @@ export const StoryBeginning = () => {
 
           <h3 style={{ transform: "translateZ(20px)" }} className="text-lg md:text-xl font-bold text-rose-900 font-display mt-0">The Beginning</h3>
           <p style={{ transform: "translateZ(10px)" }} className="text-rose-800/90 text-[10px] md:text-[13px] leading-snug md:leading-relaxed italic">
-            "I believe our story started from the school days. I don't know why I didn't make single talks in the school time 😅. Anyways, one fine day—Feb 4, 2022—standing near the railway track and waiting for my friend."
+            "I believe our story started from the school days. I don't know why I didn't make any single talks in the school time. Anyways, one fine day-Feb 4, 2022-standing near the railway track and waiting for my friend."
           </p>
         </TiltCard>
       </motion.div>

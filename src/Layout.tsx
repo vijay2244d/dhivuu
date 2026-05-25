@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { Heart, Sparkles, Mail, ChevronRight, ChevronLeft, BookHeart } from "lucide-react";
+import { Heart, Sparkles, Mail, BookHeart } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 
 import { useAppStore } from "./store";
@@ -21,8 +21,9 @@ import generatedImage2 from "./assets/images/regenerated_image_1779454319740.png
 import generatedImage3 from "./assets/images/regenerated_image_1779454586059.png";
 import generatedImage4 from "./assets/images/regenerated_image_1779457012542.png";
 import generatedImage5 from "./assets/images/regenerated_image_1779458304356.jpg";
+import generatedImage6 from "./assets/images/regenerated_image_1779702651151.jpg";
 
-const LeftPageFrame = ({ children, isBlank }: { children: React.ReactNode, isBlank?: boolean }) => {
+const LeftPageFrame = ({ children, isBlank }: { children: ReactNode, isBlank?: boolean }) => {
   if (isBlank) return <div className="w-full h-full bg-transparent" />;
   return (
     <div className="w-full h-full bg-[#fdfbf7] rounded-l-sm md:rounded-l-md relative overflow-hidden shadow-[-1px_0_0_#e5ddd0,-2px_0_0_#fdfbf7,-3px_0_0_#e5ddd0,-4px_0_0_#fdfbf7,-5px_0_0_#e5ddd0,-6px_0_0_#fdfbf7,-7px_0_0_#e5ddd0,-8px_0_0_#fdfbf7,-9px_0_0_#e5ddd0,-12px_15px_20px_rgba(0,0,0,0.15)] border-l border-y border-[#e5ddd0] transform-gpu" style={{ maskImage: '-webkit-radial-gradient(white, black)' }}>
@@ -38,7 +39,7 @@ const LeftPageFrame = ({ children, isBlank }: { children: React.ReactNode, isBla
   );
 };
 
-const RightPageFrame = ({ children }: { children: React.ReactNode }) => (
+const RightPageFrame = ({ children }: { children: ReactNode }) => (
   <div className="w-full h-full bg-[#fdfbf7] rounded-r-sm md:rounded-r-md relative overflow-hidden shadow-[1px_0_0_#e5ddd0,2px_0_0_#fdfbf7,3px_0_0_#e5ddd0,4px_0_0_#fdfbf7,5px_0_0_#e5ddd0,6px_0_0_#fdfbf7,7px_0_0_#e5ddd0,8px_0_0_#fdfbf7,9px_0_0_#e5ddd0,12px_15px_20px_rgba(0,0,0,0.15)] border-r border-y border-[#e5ddd0] transform-gpu" style={{ maskImage: '-webkit-radial-gradient(white, black)' }}>
     {/* Page edge inner shadow */}
     <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-l from-black/5 to-transparent pointer-events-none z-10" />
@@ -68,6 +69,28 @@ const ImageContent = ({ src }: { src: string }) => {
     </div>
   </div>
 )};
+
+const MultiImageContent = ({ images }: { images: string[] }) => {
+  const setZoomedImage = useAppStore(state => state.setZoomedImage);
+  return (
+    <div className="w-full h-full p-4 md:p-8 flex flex-col gap-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pointer-events-auto">
+      {images.map((src, i) => (
+        <div 
+          key={i}
+          className="w-full h-48 md:h-64 shrink-0 rounded-xl overflow-hidden shadow-inner border-2 border-rose-100 relative transform-gpu bg-rose-50/30 cursor-pointer hover:opacity-90 transition-opacity"
+          style={{ transform: 'translateZ(0)' }}
+          onClick={() => setZoomedImage(src)}
+        >
+          <img src={src} alt={`Memory ${i+1}`} className="w-full h-full object-cover transform-gpu backface-hidden" style={{ WebkitBackfaceVisibility: 'hidden' }} />
+          <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.15)] pointer-events-none" />
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/20 transition-opacity">
+            <Sparkles className="w-8 h-8 text-white drop-shadow-md" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const SPREADS = [
   { 
@@ -109,7 +132,7 @@ const SPREADS = [
     path: '/story-future', 
     name: 'Future', 
     icon: Heart, 
-    left: <ImageContent src={generatedImage5} />, 
+    left: <ImageContent src={generatedImage6} />, 
     right: <StoryFuture /> 
   },
   { 
@@ -130,12 +153,13 @@ const SPREADS = [
 
 const BackgroundDecor = () => {
   const [particles] = useState(() => 
-    Array.from({ length: 12 }).map(() => ({
+    Array.from({ length: 15 }).map(() => ({
       left: Math.random() * 100,
-      size: Math.random() * 0.8 + 0.4,
-      duration: Math.random() * 15 + 20,
-      delay: Math.random() * -20,
-      drift: Math.random() * 20 - 10,
+      size: Math.random() * 0.5 + 0.3,
+      duration: Math.random() * 20 + 25,
+      delay: Math.random() * -30,
+      drift: Math.random() * 15 - 7.5,
+      rotation: Math.random() * 360,
     }))
   );
 
@@ -148,13 +172,13 @@ const BackgroundDecor = () => {
       {particles.map((p, i) => (
         <motion.div
           key={i}
-          className="absolute"
-          initial={{ left: `${p.left}%`, top: "110%", rotate: 0, opacity: 0, x: 0 }}
+          className="absolute text-rose-300/40"
+          initial={{ left: `${p.left}%`, top: "-10%", rotate: p.rotation, opacity: 0, x: 0 }}
           animate={{
-            top: "-20%",
+            top: "110%",
             x: `${p.drift}vw`,
-            rotate: 360,
-            opacity: [0, 0.6, 0]
+            rotate: p.rotation + (p.drift > 0 ? 180 : -180),
+            opacity: [0, 0.7, 0]
           }}
           transition={{
             duration: p.duration,
@@ -163,10 +187,10 @@ const BackgroundDecor = () => {
             ease: "linear"
           }}
         >
-          <Heart 
-            className="text-rose-400/30 fill-rose-400/20" 
-            style={{ width: `${p.size * 30}px`, height: `${p.size * 30}px` }} 
-          />
+          {/* Subtle line-art / doodle style heart */}
+          <svg width={p.size * 40} height={p.size * 40} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 drop-shadow-sm">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
         </motion.div>
       ))}
     </div>
@@ -188,6 +212,7 @@ export const Layout = () => {
   const [isFlipping, setIsFlipping] = useState(false);
   const [flipDirection, setFlipDirection] = useState<'forward' | 'backward'>('forward');
   const [showKissRain, setShowKissRain] = useState(false);
+  const [showHeartRain, setShowHeartRain] = useState(false);
 
   useEffect(() => {
     if (targetIndex !== renderedSpread && !isFlipping) {
@@ -207,16 +232,20 @@ export const Layout = () => {
   return (
     <div className="h-[100svh] w-full bg-pink-50 overflow-hidden relative selection:bg-rose-200 selection:text-rose-900 font-sans flex flex-col items-center justify-center p-2 md:p-8">
       <BackgroundDecor />
-      {isEnvelopeOpen && location.pathname === '/reasons' && <HeartRain />}
+      <HeartRain active={showHeartRain} />
       <KissRain active={showKissRain} />
 
-      {/* Kiss Emoji Button Right Side */}
+      {/* Next Page / Right Side Button */}
       {isUnlocked && (
         <div className="absolute right-4 md:right-8 lg:right-12 top-1/2 -translate-y-1/2 z-50">
           <button 
             onClick={() => {
               setShowKissRain(true);
-              setTimeout(() => setShowKissRain(false), 3000); // Stop rain after 3s
+              setShowHeartRain(true);
+              setTimeout(() => {
+                setShowKissRain(false);
+                setShowHeartRain(false);
+              }, 3000);
               if (targetIndex < SPREADS.length - 1) {
                 goToPage(targetIndex + 1);
               } else {
@@ -224,10 +253,34 @@ export const Layout = () => {
               }
             }}
             disabled={isFlipping}
-            className="text-5xl md:text-6xl filter drop-shadow-md hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
-            title="Next Page and Kiss Rain"
+            className="text-5xl md:text-6xl filter drop-shadow hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
+            title="Next Page & Rain"
           >
             💋
+          </button>
+        </div>
+      )}
+
+      {/* Prev Page / Left Side Button */}
+      {isUnlocked && targetIndex > 0 && (
+        <div className="absolute left-4 md:left-8 lg:left-12 top-1/2 -translate-y-1/2 z-50">
+          <button 
+            onClick={() => {
+              setShowKissRain(true);
+              setShowHeartRain(true);
+              setTimeout(() => {
+                setShowKissRain(false);
+                setShowHeartRain(false);
+              }, 3000);
+              if (targetIndex > 0) {
+                goToPage(targetIndex - 1);
+              }
+            }}
+            disabled={isFlipping}
+            className="text-5xl md:text-6xl filter drop-shadow hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
+            title="Previous Page & Rain"
+          >
+            ❤️
           </button>
         </div>
       )}

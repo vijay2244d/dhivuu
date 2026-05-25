@@ -1,31 +1,35 @@
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { useEffect, useState } from "react";
 
 export const KissRain = ({ active }: { active: boolean }) => {
   const [raindrops, setRaindrops] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!active) {
-      setRaindrops([]);
-      return;
+    if (active && raindrops.length === 0) {
+      // Generate drops
+      const drops = Array.from({ length: 50 }).map((_, i) => ({
+        id: i,
+        left: Math.random() * 100, // percentage 0-100
+        size: Math.random() * 1.5 + 1.0,
+        delay: Math.random() * 1.5, // stagger the rain
+        duration: Math.random() * 2 + 2, // some fall faster
+        emoji: Math.random() > 0.5 ? '💋' : '❤️',
+      }));
+      setRaindrops(drops);
     }
-    // Generate drops
-    const drops = Array.from({ length: 50 }).map((_, i) => ({
-      id: i,
-      left: Math.random() * 100, // percentage 0-100
-      size: Math.random() * 1.5 + 1.0,
-      delay: Math.random() * 1.5, // stagger the rain
-      duration: Math.random() * 2 + 2, // some fall faster
-      emoji: Math.random() > 0.5 ? '💋' : '❤️',
-    }));
-    setRaindrops(drops);
-  }, [active]);
-
-  if (!active) return null;
+  }, [active, raindrops.length]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
-      {raindrops.map((drop) => (
+    <AnimatePresence>
+      {active && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+          className="fixed inset-0 pointer-events-none z-[100] overflow-hidden"
+        >
+          {raindrops.map((drop) => (
         <motion.div
           key={drop.id}
           className="absolute top-[-10%] flex items-center justify-center filter drop-shadow-md"
@@ -51,6 +55,8 @@ export const KissRain = ({ active }: { active: boolean }) => {
           <span style={{ fontSize: '32px', lineHeight: 1 }}>{drop.emoji}</span>
         </motion.div>
       ))}
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

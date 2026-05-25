@@ -10,7 +10,7 @@ export default function App() {
   return (
     <>
       <AnimatePresence>
-        {!isUnlocked && <LockScreen key="lock-screen" onUnlock={() => setUnlocked(true)} />}
+        {!isUnlocked && <LockScreen onUnlock={() => setUnlocked(true)} />}
       </AnimatePresence>
       <HashRouter>
         <Routes>
