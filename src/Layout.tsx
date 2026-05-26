@@ -52,12 +52,17 @@ const RightPageFrame = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-const ImageContent = ({ src }: { src: string }) => {
+const ImageContent = ({ src, topCaption, bottomCaption }: { src: string, topCaption?: string, bottomCaption?: string }) => {
   const setZoomedImage = useAppStore(state => state.setZoomedImage);
   return (
-  <div className="w-full h-full p-4 md:p-8 flex items-center justify-center">
+  <div className="w-full h-full p-4 md:p-8 flex flex-col items-center justify-center">
+    {topCaption && (
+      <div className="text-rose-900 font-display text-lg md:text-xl text-center italic w-full mb-4 md:mb-6">
+        {topCaption}
+      </div>
+    )}
     <div 
-      className="w-full h-full rounded-xl overflow-hidden shadow-inner border-2 border-rose-100 relative transform-gpu bg-rose-50/30 cursor-pointer hover:opacity-90 transition-opacity" 
+      className="w-full flex-1 min-h-0 rounded-xl overflow-hidden shadow-inner border-2 border-rose-100 relative transform-gpu bg-rose-50/30 cursor-pointer hover:opacity-90 transition-opacity" 
       style={{ transform: 'translateZ(0)' }}
       onClick={() => setZoomedImage(src)}
     >
@@ -67,6 +72,11 @@ const ImageContent = ({ src }: { src: string }) => {
          <Sparkles className="w-8 h-8 text-white drop-shadow-md" />
        </div>
     </div>
+    {bottomCaption && (
+      <div className="text-rose-900 font-display text-lg md:text-xl text-center italic w-full mt-4 md:mt-6">
+        {bottomCaption}
+      </div>
+    )}
   </div>
 )};
 
@@ -132,7 +142,7 @@ const SPREADS = [
     path: '/story-future', 
     name: 'Future', 
     icon: Heart, 
-    left: <ImageContent src={generatedImage6} />, 
+    left: <ImageContent src={generatedImage6} topCaption="what will i lose if i have" bottomCaption="what will i have if i lose you " />, 
     right: <StoryFuture /> 
   },
   { 
