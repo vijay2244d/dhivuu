@@ -157,7 +157,7 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
   useEffect(() => {
     if (phase !== 'lock') return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && !e.repeat) {
+      if ((e.key === 'Enter' || e.key === ' ') && !e.repeat) {
         e.preventDefault();
         handleClick();
       }
@@ -373,7 +373,8 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
             key="lock"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center gap-8 z-20 max-w-sm w-full p-8 relative bg-white/50 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50"
+            onClick={handleClick}
+            className="flex flex-col items-center gap-8 z-20 max-w-sm w-full p-8 relative bg-white/50 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50 cursor-pointer"
           >
             <div className="z-10 relative text-center flex flex-col items-center w-full">
               <div className="w-20 h-20 bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.08)] flex items-center justify-center mb-6 border border-rose-50 relative overflow-hidden">
@@ -389,9 +390,6 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
               >
                 Just For You
               </motion.h2>
-              <p className="text-rose-600/80 font-medium text-sm mt-2 max-w-[240px]">
-                Repeatedly tap Enter or click to unlock our safe space.
-              </p>
             </div>
 
             {/* Heartbeat EKG Line */}
@@ -432,19 +430,6 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
                 />
               </div>
             </div>
-
-            <motion.button
-              onClick={handleClick}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.95 }}
-              className={`relative w-full max-w-[200px] py-4 rounded-full shadow-md text-white font-bold uppercase tracking-widest transition-all focus:outline-none ${
-                isPressing 
-                  ? 'bg-rose-600 shadow-[inset_0_4px_10px_rgba(0,0,0,0.2)]' 
-                  : 'bg-rose-500 hover:bg-rose-600 hover:shadow-lg'
-              }`}
-            >
-              Start Pulse
-            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
