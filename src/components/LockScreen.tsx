@@ -358,8 +358,13 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
-            className="flex flex-col items-center justify-center z-10 px-8 text-center"
+            className="flex flex-col items-center justify-center z-10 px-8 text-center gap-4"
           >
+            <motion.p 
+              className="text-lg md:text-2xl font-display font-medium text-rose-400 tracking-wide italic"
+            >
+              thats how you unlock my love book
+            </motion.p>
             <motion.h2 
               className="text-3xl md:text-5xl font-display font-medium text-rose-500 tracking-wider"
             >

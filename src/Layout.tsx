@@ -11,17 +11,22 @@ import { StoryBeginningContinued } from "./pages/StoryBeginningContinued";
 import { StoryMemories } from "./pages/StoryMemories";
 import { StoryMemoriesContinued } from "./pages/StoryMemoriesContinued";
 import { StoryFuture } from "./pages/StoryFuture";
+import { FutureScenario } from "./pages/FutureScenario";
 import { Reasons } from "./pages/Reasons";
 import { ReasonsLeft } from "./pages/ReasonsLeft";
 import { Note } from "./pages/Note";
 import { HeartRain } from "./components/HeartRain";
 import { KissRain } from "./components/KissRain";
-import generatedImage1 from "./assets/images/regenerated_image_1779435727014.png";
-import generatedImage2 from "./assets/images/regenerated_image_1779454319740.png";
-import generatedImage3 from "./assets/images/regenerated_image_1779454586059.png";
-import generatedImage4 from "./assets/images/regenerated_image_1779457012542.png";
+import generatedImage1 from "./assets/images/regenerated_image_1779435727014.jpg";
+import generatedImage2 from "./assets/images/regenerated_image_1779454319740.jpg";
+import generatedImage3 from "./assets/images/regenerated_image_1779454586059.jpg";
+import generatedImage4 from "./assets/images/media__1779892536922.jpg";
 import generatedImage5 from "./assets/images/regenerated_image_1779458304356.jpg";
 import generatedImage6 from "./assets/images/regenerated_image_1779702651151.jpg";
+import futureScenarioImg1 from "./assets/images/media__1779891557910.jpg";
+import futureScenarioImg2 from "./assets/images/media__1779891558880.jpg";
+import futureScenarioImg3 from "./assets/images/media__1779891559020.jpg";
+import futureScenarioImg4 from "./assets/images/media__1779893261718.jpg";
 
 const LeftPageFrame = ({ children, isBlank }: { children: ReactNode, isBlank?: boolean }) => {
   if (isBlank) return <div className="w-full h-full bg-transparent" />;
@@ -144,6 +149,13 @@ const SPREADS = [
     icon: Heart, 
     left: <ImageContent src={generatedImage6} topCaption="what will i lose if i have" bottomCaption="what will i have if i lose you " />, 
     right: <StoryFuture /> 
+  },
+  { 
+    path: '/story-future-scenario', 
+    name: 'Future Scenarios', 
+    icon: Sparkles, 
+    left: <MultiImageContent images={[futureScenarioImg1, futureScenarioImg2, futureScenarioImg3, futureScenarioImg4]} />, 
+    right: <FutureScenario /> 
   },
   { 
     path: '/reasons', 
