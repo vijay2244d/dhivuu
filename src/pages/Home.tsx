@@ -1,8 +1,11 @@
 import { motion } from "motion/react";
 import { FloatingElement } from "../components/FloatingElement";
-import { Heart } from "lucide-react";
+import { Heart, BookHeart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center text-center gap-6 md:gap-10 p-4 md:p-8">
       <div className="w-full max-w-[200px] md:max-w-xs aspect-square relative z-10 perspective-1000 mx-auto">
@@ -64,6 +67,20 @@ export const Home = () => {
         >
           I wanted to build something special to show you how much you mean to me. Turn the page to see our story.
         </motion.p>
+
+        {/* Back to library button */}
+        <motion.button
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          onClick={() => navigate('/')}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 text-white font-medium text-[10px] md:text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all cursor-pointer mt-2"
+        >
+          <BookHeart className="w-3.5 h-3.5" />
+          <span>Back to Library 📚</span>
+        </motion.button>
       </div>
     </div>
   );

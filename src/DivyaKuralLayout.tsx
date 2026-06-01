@@ -1,32 +1,19 @@
 import { useEffect, useState, ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { Heart, Sparkles, Mail, BookHeart } from "lucide-react";
-import { cn } from "@/src/lib/utils";
-
+import { Heart, Sparkles, BookHeart } from "lucide-react";
 import { useAppStore } from "./store";
-import { Home } from "./pages/Home";
-import { StoryBeginning } from "./pages/StoryBeginning";
-import { StoryBeginningContinued } from "./pages/StoryBeginningContinued";
-import { StoryMemories } from "./pages/StoryMemories";
-import { StoryMemoriesContinued } from "./pages/StoryMemoriesContinued";
-import { StoryFuture } from "./pages/StoryFuture";
-import { FutureScenario } from "./pages/FutureScenario";
-import { Reasons } from "./pages/Reasons";
-import { ReasonsLeft } from "./pages/ReasonsLeft";
-import { Note } from "./pages/Note";
 import { HeartRain } from "./components/HeartRain";
 import { KissRain } from "./components/KissRain";
-import generatedImage1 from "./assets/images/regenerated_image_1779435727014.jpg";
-import generatedImage2 from "./assets/images/regenerated_image_1779454319740.jpg";
-import generatedImage3 from "./assets/images/regenerated_image_1779454586059.jpg";
-import generatedImage4 from "./assets/images/media__1779892536922.jpg";
-import generatedImage5 from "./assets/images/regenerated_image_1779458304356.jpg";
-import generatedImage6 from "./assets/images/regenerated_image_1779702651151.jpg";
-import futureScenarioImg1 from "./assets/images/media__1779891557910.jpg";
-import futureScenarioImg2 from "./assets/images/media__1779891558880.jpg";
-import futureScenarioImg3 from "./assets/images/media__1779891559020.jpg";
-import futureScenarioImg4 from "./assets/images/media__1779893261718.jpg";
+import {
+  DIVYA_KURAL_DATA,
+  DivyaKuralCover,
+  KuralArtPage,
+  KuralContentPage,
+  DivyaKuralEnd,
+  DivyaKuralIntroPage
+} from "./pages/DivyaKuralPages";
+import introImage from "./assets/images/media__1780296462725.jpg";
 
 const LeftPageFrame = ({ children, isBlank }: { children: ReactNode, isBlank?: boolean }) => {
   if (isBlank) return <div className="w-full h-full bg-transparent" />;
@@ -57,119 +44,97 @@ const RightPageFrame = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-const ImageContent = ({ src, topCaption, bottomCaption }: { src: string, topCaption?: string, bottomCaption?: string }) => {
-  const setZoomedImage = useAppStore(state => state.setZoomedImage);
-  return (
-  <div className="w-full h-full p-4 md:p-8 flex flex-col items-center justify-center">
-    {topCaption && (
-      <div className="text-rose-900 font-display text-lg md:text-xl text-center italic w-full mb-4 md:mb-6">
-        {topCaption}
-      </div>
-    )}
-    <div 
-      className="w-full flex-1 min-h-0 rounded-xl overflow-hidden shadow-inner border-2 border-rose-100 relative transform-gpu bg-rose-50/30 cursor-pointer hover:opacity-90 transition-opacity" 
-      style={{ transform: 'translateZ(0)' }}
-      onClick={() => setZoomedImage(src)}
-    >
-       <img src={src} alt="Memory" className="w-full h-full object-cover transform-gpu backface-hidden" style={{ WebkitBackfaceVisibility: 'hidden' }} />
-       <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.15)] pointer-events-none" />
-       <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/20 transition-opacity">
-         <Sparkles className="w-8 h-8 text-white drop-shadow-md" />
-       </div>
-    </div>
-    {bottomCaption && (
-      <div className="text-rose-900 font-display text-lg md:text-xl text-center italic w-full mt-4 md:mt-6">
-        {bottomCaption}
-      </div>
-    )}
-  </div>
-)};
-
-const MultiImageContent = ({ images }: { images: string[] }) => {
-  const setZoomedImage = useAppStore(state => state.setZoomedImage);
-  return (
-    <div className="w-full h-full p-4 md:p-8 flex flex-col gap-4 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pointer-events-auto">
-      {images.map((src, i) => (
-        <div 
-          key={i}
-          className="w-full h-48 md:h-64 shrink-0 rounded-xl overflow-hidden shadow-inner border-2 border-rose-100 relative transform-gpu bg-rose-50/30 cursor-pointer hover:opacity-90 transition-opacity"
-          style={{ transform: 'translateZ(0)' }}
-          onClick={() => setZoomedImage(src)}
-        >
-          <img src={src} alt={`Memory ${i+1}`} className="w-full h-full object-cover transform-gpu backface-hidden" style={{ WebkitBackfaceVisibility: 'hidden' }} />
-          <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.15)] pointer-events-none" />
-          <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 bg-black/20 transition-opacity">
-            <Sparkles className="w-8 h-8 text-white drop-shadow-md" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const SPREADS = [
   { 
-    path: '/story', 
+    path: '/kural', 
     name: 'Cover', 
     icon: BookHeart, 
-    left: null, 
-    right: <Home /> 
+    left: <DivyaKuralIntroPage />, 
+    right: <DivyaKuralCover /> 
   },
   { 
-    path: '/story-beginning', 
-    name: 'The Beginning', 
+    path: '/kural/1', 
+    name: 'அ', 
     icon: Heart, 
-    left: <ImageContent src={generatedImage1} />, 
-    right: <StoryBeginning /> 
+    left: <KuralArtPage vowel="அ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[0]} /> 
   },
   { 
-    path: '/story-beginning-continued', 
-    name: 'Spark', 
+    path: '/kural/2', 
+    name: 'ஆ', 
     icon: Heart, 
-    left: <ImageContent src={generatedImage3} />, 
-    right: <StoryBeginningContinued /> 
+    left: <KuralArtPage vowel="ஆ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[1]} /> 
   },
   { 
-    path: '/story-memories', 
-    name: 'Memories', 
+    path: '/kural/3', 
+    name: 'இ', 
     icon: Heart, 
-    left: <ImageContent src={generatedImage2} />, 
-    right: <StoryMemories /> 
+    left: <KuralArtPage vowel="இ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[2]} /> 
   },
   { 
-    path: '/story-memories-continued', 
-    name: 'Healing', 
+    path: '/kural/4', 
+    name: 'ஈ', 
     icon: Heart, 
-    left: <ImageContent src={generatedImage4} />, 
-    right: <StoryMemoriesContinued /> 
+    left: <KuralArtPage vowel="ஈ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[3]} /> 
   },
   { 
-    path: '/story-future', 
-    name: 'Future', 
+    path: '/kural/5', 
+    name: 'உ', 
     icon: Heart, 
-    left: <ImageContent src={generatedImage6} topCaption="what will i lose if i have" bottomCaption="what will i have if i lose you " />, 
-    right: <StoryFuture /> 
+    left: <KuralArtPage vowel="உ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[4]} /> 
   },
   { 
-    path: '/story-future-scenario', 
-    name: 'Future Scenarios', 
-    icon: Sparkles, 
-    left: <MultiImageContent images={[futureScenarioImg1, futureScenarioImg2, futureScenarioImg3, futureScenarioImg4]} />, 
-    right: <FutureScenario /> 
+    path: '/kural/6', 
+    name: 'ஊ', 
+    icon: Heart, 
+    left: <KuralArtPage vowel="ஊ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[5]} /> 
   },
   { 
-    path: '/reasons', 
-    name: 'Reasons', 
-    icon: Sparkles, 
-    left: <ReasonsLeft />, 
-    right: <Reasons /> 
+    path: '/kural/7', 
+    name: 'எ', 
+    icon: Heart, 
+    left: <KuralArtPage vowel="எ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[6]} /> 
   },
   { 
-    path: '/note', 
-    name: 'Note', 
-    icon: Mail, 
-    left: <ImageContent src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&q=80&w=800" />, 
-    right: <Note /> 
+    path: '/kural/8', 
+    name: 'ஏ', 
+    icon: Heart, 
+    left: <KuralArtPage vowel="ஏ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[7]} /> 
+  },
+  { 
+    path: '/kural/9', 
+    name: 'ஐ', 
+    icon: Heart, 
+    left: <KuralArtPage vowel="ஐ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[8]} /> 
+  },
+  { 
+    path: '/kural/10', 
+    name: 'ஒ', 
+    icon: Heart, 
+    left: <KuralArtPage vowel="ஒ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[9]} /> 
+  },
+  { 
+    path: '/kural/11', 
+    name: 'ஓ', 
+    icon: Heart, 
+    left: <KuralArtPage vowel="ஓ" />, 
+    right: <KuralContentPage kural={DIVYA_KURAL_DATA[10]} /> 
+  },
+  { 
+    path: '/kural/end', 
+    name: 'End', 
+    icon: BookHeart, 
+    left: <KuralArtPage vowel="✨" />, 
+    right: <DivyaKuralEnd /> 
   },
 ];
 
@@ -187,9 +152,9 @@ const BackgroundDecor = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-rose-200/40 blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-fuchsia-200/40 blur-[120px]" />
-      <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-pink-300/30 blur-[100px]" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-amber-100/40 blur-[120px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-rose-200/40 blur-[120px]" />
+      <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full bg-pink-200/30 blur-[100px]" />
       
       {particles.map((p, i) => (
         <motion.div
@@ -209,7 +174,6 @@ const BackgroundDecor = () => {
             ease: "linear"
           }}
         >
-          {/* Subtle line-art / doodle style heart */}
           <svg width={p.size * 40} height={p.size * 40} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60 drop-shadow-sm">
             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
           </svg>
@@ -219,13 +183,10 @@ const BackgroundDecor = () => {
   );
 };
 
-export const Layout = () => {
+export const DivyaKuralLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const isEnvelopeOpen = useAppStore((state) => state.isEnvelopeOpen);
   const isUnlocked = useAppStore((state) => state.isUnlocked);
-  const zoomedImage = useAppStore((state) => state.zoomedImage);
-  const setZoomedImage = useAppStore((state) => state.setZoomedImage);
   
   const matchedIndex = SPREADS.findIndex(s => s.path === location.pathname);
   const targetIndex = matchedIndex === -1 ? 0 : matchedIndex;
@@ -235,6 +196,16 @@ export const Layout = () => {
   const [flipDirection, setFlipDirection] = useState<'forward' | 'backward'>('forward');
   const [showKissRain, setShowKissRain] = useState(false);
   const [showHeartRain, setShowHeartRain] = useState(false);
+  
+  // Splash screen state
+  const [showSplash, setShowSplash] = useState(true);
+
+  // If the user navigates directly to specific pages, do not block with splash screen
+  useEffect(() => {
+    if (location.pathname !== "/kural") {
+      setShowSplash(false);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     if (targetIndex !== renderedSpread && !isFlipping) {
@@ -252,7 +223,78 @@ export const Layout = () => {
   const currentRight = SPREADS[isFlipping && flipDirection === 'forward' ? targetIndex : renderedSpread].right;
 
   return (
-    <div className="h-[100svh] w-full bg-pink-50 overflow-hidden relative selection:bg-rose-200 selection:text-rose-900 font-sans flex flex-col items-center justify-center p-2 md:p-8">
+    <div className="h-[100svh] w-full bg-gradient-to-tr from-pink-100/70 via-rose-50 to-amber-100/70 overflow-hidden relative selection:bg-rose-200 selection:text-rose-900 font-sans flex flex-col items-center justify-center p-2 md:p-8">
+      
+      {/* Intro Splash Screen Overlay */}
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 z-50 bg-[#faf8f2] flex flex-col items-center justify-center p-6 text-center select-none overflow-y-auto"
+          >
+            {/* Visual borders */}
+            <div className="absolute inset-3 md:inset-4 border border-amber-800/10 pointer-events-none rounded-2xl" />
+            <div className="absolute inset-4 md:inset-5 border border-dashed border-amber-800/5 pointer-events-none rounded-2xl" />
+
+            {/* Corner ornaments */}
+            <div className="absolute top-[24px] left-[24px] md:top-[32px] md:left-[32px] w-6 h-6 md:w-8 md:h-8 border-t-2 border-l-2 border-amber-800/20 rounded-tl" />
+            <div className="absolute top-[24px] right-[24px] md:top-[32px] md:right-[32px] w-6 h-6 md:w-8 md:h-8 border-t-2 border-r-2 border-amber-800/20 rounded-tr" />
+            <div className="absolute bottom-[24px] left-[24px] md:bottom-[32px] md:left-[32px] w-6 h-6 md:w-8 md:h-8 border-b-2 border-l-2 border-amber-800/20 rounded-bl" />
+            <div className="absolute bottom-[24px] right-[24px] md:bottom-[32px] md:right-[32px] w-6 h-6 md:w-8 md:h-8 border-b-2 border-r-2 border-amber-800/20 rounded-br" />
+
+            <div className="flex flex-col items-center max-w-lg mx-auto gap-5 md:gap-7 my-auto">
+              
+              {/* Golden frame around image */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.9, ease: "easeOut" }}
+                className="w-full max-w-[200px] md:max-w-[250px] aspect-[4/5] rounded-2xl overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.15)] border-4 border-amber-200/50 relative animate-pulse"
+                style={{ animationDuration: '3s' }}
+              >
+                <img src={introImage} alt="Portrait Intro" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+              </motion.div>
+
+              {/* Dedication Text */}
+              <div className="space-y-3">
+                <motion.h2
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="text-base md:text-xl font-bold font-serif text-rose-955 px-2 leading-relaxed tracking-wide"
+                >
+                  "திவ்யாக்குரல் புகின் வள்ளுவனாய் மாற்றியதற்கு நன்றி"
+                </motion.h2>
+                
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.7, duration: 0.5 }}
+                  className="w-20 h-[1.5px] bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto"
+                />
+              </div>
+
+              {/* Action Button */}
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9, duration: 0.5 }}
+                onClick={() => setShowSplash(false)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-2.5 rounded-full bg-gradient-to-r from-amber-700 via-amber-600 to-rose-700 hover:from-amber-600 hover:to-rose-600 text-white font-medium text-[10px] md:text-xs uppercase tracking-widest shadow-lg cursor-pointer transition-all border border-white/10"
+              >
+                Enter Book • நூலைத் திறக்கவும் 📖
+              </motion.button>
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <BackgroundDecor />
       <HeartRain active={showHeartRain} />
       <KissRain active={showKissRain} />
@@ -310,11 +352,14 @@ export const Layout = () => {
       <div 
         className="relative flex z-10 perspective-[2500px] mt-4"
         style={{ 
-          width: 'min(98vw, 1600px, calc((100svh - 60px) * (1600 / 1250)))', 
-          aspectRatio: '1600 / 1250',
-          maxHeight: 'min(1250px, calc(100svh - 60px))'
+          width: 'min(98vw, 1600px, calc((100svh - 60px) * (1600 / 900)))', 
+          aspectRatio: '1600 / 900',
+          maxHeight: 'min(900px, calc(100svh - 60px))'
         }}
       >
+        {/* Hardback Book Cover Backdrop */}
+        <div className="absolute inset-y-[-6px] inset-x-[-8px] bg-gradient-to-r from-rose-950 via-rose-900 to-rose-955 rounded-lg shadow-[0_25px_65px_rgba(0,0,0,0.35)] border-2 border-rose-900/60 z-0 pointer-events-none" />
+        <div className="absolute left-1/2 top-[-6px] bottom-[-6px] w-[6px] -ml-[3px] bg-amber-500/20 z-0 pointer-events-none" />
         
         {/* Book Binding Shadow */}
         <div className="absolute left-1/2 top-0 bottom-0 w-8 -ml-4 bg-black/20 blur-md pointer-events-none z-0" />
@@ -355,7 +400,6 @@ export const Layout = () => {
               <RightPageFrame>
                 {SPREADS[renderedSpread].right}
               </RightPageFrame>
-              {/* Dynamic shadow as it turns away */}
               <motion.div 
                 className="absolute inset-0 bg-gradient-to-l from-black/0 to-black/20 pointer-events-none"
                 initial={{ opacity: 0 }}
@@ -368,7 +412,6 @@ export const Layout = () => {
               <LeftPageFrame isBlank={SPREADS[targetIndex].left === null}>
                 {SPREADS[targetIndex].left}
               </LeftPageFrame>
-              {/* Dynamic shadow as it turns towards viewer */}
               <motion.div 
                 className="absolute inset-0 bg-gradient-to-r from-black/0 to-black/20 pointer-events-none"
                 initial={{ opacity: 1 }}
@@ -424,33 +467,6 @@ export const Layout = () => {
         )}
 
       </div>
-
-      <AnimatePresence>
-        {zoomedImage && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setZoomedImage(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-12 cursor-zoom-out"
-          >
-            <motion.img 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              src={zoomedImage} 
-              alt="Zoomed" 
-              className="max-w-full max-h-full object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/20" 
-            />
-            {/* Close instruction */}
-            <div className="absolute top-6 right-6 text-white/50 text-sm font-medium tracking-wider">
-              CLICK TO CLOSE
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
     </div>
   );
 };
