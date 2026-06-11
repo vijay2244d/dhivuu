@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { Infinity as InfinityIcon } from "lucide-react";
 import { TiltCard } from "../components/TiltCard";
-import futureMusic from "../assets/wp.mp3";
+import futureMusic from "../assets/background.mp3";
 
 export const StoryFuture = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
