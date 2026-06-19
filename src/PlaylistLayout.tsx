@@ -75,9 +75,10 @@ const BackgroundDecor = () => {
   );
 };
 
-// Helper: build a proxy URL for Google Drive file IDs.
-// In dev, Vite proxies /gdrive/* to drive.usercontent.google.com, bypassing CORS.
-const gdrive = (id: string) => `/gdrive/download?id=${id}&export=download&authuser=0`;
+// Helper: build a direct Google Drive streaming URL for audio file IDs.
+// Uses drive.usercontent.google.com directly — works on both dev and deployed (GitHub Pages).
+const gdrive = (id: string) => `https://drive.usercontent.google.com/download?id=${id}&export=download&authuser=0`;
+
 
 // Configure your Google Drive audio file IDs here, mapped by image filename.
 export const PLAYLIST_SONGS: Record<string, string | string[]> = {
@@ -173,11 +174,11 @@ export const PLAYLIST_SONGS: Record<string, string | string[]> = {
   "zero": gdrive("1_8nEO6d6izwVAHagjJ8OcwLwHN6P_lzV")
 };
 
-// Check if a src string is a valid audio source (proxy URL or absolute URL)
 const isValidAudioSrc = (src: string | undefined): boolean => {
   if (!src) return false;
-  return src.startsWith("/gdrive/") || (src.startsWith("http") && !src.includes("/playlist"));
+  return src.startsWith("https://drive.usercontent.google.com") || src.startsWith("/gdrive/");
 };
+
 
 export const PlaylistLayout = () => {
   const location = useLocation();
