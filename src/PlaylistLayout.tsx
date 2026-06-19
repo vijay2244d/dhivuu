@@ -75,8 +75,6 @@ const BackgroundDecor = () => {
   );
 };
 
-// Helper: build a Google Drive audio streaming URL.
-// Uses the open/uc endpoint which works in browser audio elements without CORS issues.
 const gdrive = (id: string) => `https://drive.google.com/uc?export=open&id=${id}`;
 
 
@@ -174,7 +172,6 @@ export const PLAYLIST_SONGS: Record<string, string | string[]> = {
   "veera": gdrive("1GLcnItQFzUXowW0ZdHxyfOvwonldwVti"),
   "zero": gdrive("1_8nEO6d6izwVAHagjJ8OcwLwHN6P_lzV")
 };
-// Check if a src string is a valid audio source (Google Drive URL)
 const isValidAudioSrc = (src: string | undefined): boolean => {
   if (!src) return false;
   return src.startsWith("https://drive.google.com/uc") ||
