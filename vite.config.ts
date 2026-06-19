@@ -7,7 +7,7 @@ import { Readable } from 'stream';
 
 export default defineConfig(() => {
   return {
-    base: './',
+    base: process.env.VITE_BASE_PATH || './',
     plugins: [
       react(), 
       tailwindcss(),
