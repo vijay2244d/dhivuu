@@ -33,17 +33,22 @@ export const LockScreen = ({ onUnlock }: LockScreenProps) => {
     if (phase === 'auth') {
       let stream: MediaStream | null = null;
       
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(s => {
-          stream = s;
-          if (videoRef.current) {
-            videoRef.current.srcObject = s;
-          }
-        })
-        .catch(err => {
-          console.error("Error accessing webcam:", err);
-          setCameraError(true);
-        });
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(s => {
+            stream = s;
+            if (videoRef.current) {
+              videoRef.current.srcObject = s;
+            }
+          })
+          .catch(err => {
+            console.error("Error accessing webcam:", err);
+            setCameraError(true);
+          });
+      } else {
+        console.warn("navigator.mediaDevices or getUserMedia not available");
+        setCameraError(true);
+      }
 
       const interval = setInterval(() => {
         setProgress(p => {

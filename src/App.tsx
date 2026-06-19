@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import { Layout } from "./Layout";
 import { DivyaKuralLayout } from "./DivyaKuralLayout";
+import { PlaylistLayout } from "./PlaylistLayout";
 import { Dashboard } from "./pages/Dashboard";
 import { LockScreen } from "./components/LockScreen";
 import { useAppStore } from "./store";
@@ -18,6 +19,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/kural/*" element={<DivyaKuralLayout />} />
+          <Route path="/playlist/*" element={<PlaylistLayout />} />
           <Route path="/*" element={<Layout />} />
         </Routes>
       </HashRouter>

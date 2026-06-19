@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
-import { Heart, BookHeart, Sparkles, Star } from "lucide-react";
+import { Heart, BookHeart, Sparkles, Star, Music } from "lucide-react";
 import { Book3D } from "../components/Book3D";
 import { useAppStore } from "../store";
+import SoftAurora from "../components/SoftAurora";
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const [hoveredBook, setHoveredBook] = useState<'story' | 'kural' | null>(null);
-  const [selectedBook, setSelectedBook] = useState<'story' | 'kural' | null>(null);
+  const [hoveredBook, setHoveredBook] = useState<'story' | 'kural' | 'playlist' | null>(null);
+  const [selectedBook, setSelectedBook] = useState<'story' | 'kural' | 'playlist' | null>(null);
   
   // Track unlock state to delay entry animations
   const isUnlocked = useAppStore((state) => state.isUnlocked);
@@ -23,16 +24,16 @@ export const Dashboard = () => {
     return () => window.removeEventListener("resize", checkMd);
   }, []);
 
-  // Distance from book default layout position to viewport center
-  const xOffset = isMd ? 156 : 124;
+  // Distance from default layout position to viewport center for outer books
+  const offset = isMd ? 312 : 248;
 
-  const handleSelect = (book: 'story' | 'kural') => {
+  const handleSelect = (book: 'story' | 'kural' | 'playlist') => {
     if (selectedBook) return; // Prevent double trigger
     setSelectedBook(book);
     
     // Delayed route navigation to match the zoom animation
     setTimeout(() => {
-      navigate(book === 'story' ? '/story' : '/kural');
+      navigate(book === 'story' ? '/story' : book === 'kural' ? '/kural' : '/playlist');
     }, 1000);
   };
 
@@ -49,10 +50,10 @@ export const Dashboard = () => {
   );
 
   return (
-    <div className="h-[100svh] w-full bg-gradient-to-tr from-rose-50/70 via-pink-50/50 to-amber-50/40 overflow-hidden relative selection:bg-rose-200 selection:text-rose-900 font-sans flex flex-col items-center justify-between p-4 md:p-8">
+    <div className="h-[100svh] w-full bg-black overflow-hidden relative selection:bg-rose-950 selection:text-rose-200 font-sans flex flex-col items-center justify-between p-4 md:p-8">
       {/* Viewport Frame Borders */}
-      <div className="absolute inset-3 md:inset-4 border border-rose-200/30 pointer-events-none rounded-2xl z-10" />
-      <div className="absolute inset-4 md:inset-5 border border-dashed border-amber-300/15 pointer-events-none rounded-2xl z-10" />
+      <div className="absolute inset-3 md:inset-4 border border-rose-500/10 pointer-events-none rounded-2xl z-10" />
+      <div className="absolute inset-4 md:inset-5 border border-dashed border-amber-300/10 pointer-events-none rounded-2xl z-10" />
 
       {/* Full-screen seamless transition color overlay */}
       <AnimatePresence>
@@ -68,12 +69,12 @@ export const Dashboard = () => {
       </AnimatePresence>
 
       {/* Cursive Corner Floral Accents */}
-      <div className="absolute top-0 left-0 w-32 h-32 md:w-44 md:h-44 text-rose-400/10 pointer-events-none z-0 transform rotate-90 scale-y-[-1]">
+      <div className="absolute top-0 left-0 w-32 h-32 md:w-44 md:h-44 text-rose-400/5 pointer-events-none z-0 transform rotate-90 scale-y-[-1]">
         <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full">
           <path d="M10,80 C20,70 40,65 50,45 C55,35 50,20 40,15 C30,10 20,20 25,35 C28,45 42,48 50,40 C60,30 55,10 70,5 C80,2 90,15 85,25 C80,35 65,45 55,60 C45,75 35,90 10,95 Z" />
         </svg>
       </div>
-      <div className="absolute bottom-0 right-0 w-32 h-32 md:w-44 md:h-44 text-rose-400/10 pointer-events-none z-0">
+      <div className="absolute bottom-0 right-0 w-32 h-32 md:w-44 md:h-44 text-rose-400/5 pointer-events-none z-0">
         <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full">
           <path d="M10,80 C20,70 40,65 50,45 C55,35 50,20 40,15 C30,10 20,20 25,35 C28,45 42,48 50,40 C60,30 55,10 70,5 C80,2 90,15 85,25 C80,35 65,45 55,60 C45,75 35,90 10,95 Z" />
         </svg>
@@ -93,66 +94,35 @@ export const Dashboard = () => {
         className="mt-6 z-10 flex flex-col items-center gap-1 select-none pointer-events-none"
       >
         <Heart className="w-4 h-4 text-rose-500 fill-rose-300 animate-pulse" />
-        <span className="text-[9px] md:text-xs font-semibold text-rose-800/60 uppercase tracking-[0.35em] font-display">
+        <span className="text-[9px] md:text-xs font-semibold text-rose-300/60 uppercase tracking-[0.35em] font-display">
           Our Digital Sanctuary
         </span>
       </motion.div>
 
-      {/* Drifting Background Mesh Gradients */}
+      {/* SoftAurora Interactive WebGL Background */}
+      {isUnlocked && (
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <SoftAurora
+            speed={0.8}
+            scale={1.5}
+            brightness={1}
+            color1="#f7f7f7"
+            color2="#e100ff"
+            noiseFrequency={2.5}
+            noiseAmplitude={1}
+            bandHeight={0.5}
+            bandSpread={1}
+            octaveDecay={0.1}
+            layerOffset={0}
+            colorSpeed={1}
+            enableMouseInteraction={true}
+            mouseInfluence={0.25}
+          />
+        </div>
+      )}
+
+      {/* Floating dust/particles */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.div
-          animate={
-            isUnlocked
-              ? { x: [0, 50, -30, 0], y: [0, -40, 40, 0], opacity: 1 }
-              : { opacity: 0 }
-          }
-          transition={
-            isUnlocked
-              ? {
-                  x: { duration: 25, repeat: Infinity, ease: "easeInOut" },
-                  y: { duration: 25, repeat: Infinity, ease: "easeInOut" },
-                  opacity: { duration: 1.5 }
-                }
-              : { duration: 0 }
-          }
-          className="absolute top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full bg-rose-200/30 blur-[130px]"
-        />
-        <motion.div
-          animate={
-            isUnlocked
-              ? { x: [0, -40, 50, 0], y: [0, 40, -40, 0], opacity: 1 }
-              : { opacity: 0 }
-          }
-          transition={
-            isUnlocked
-              ? {
-                  x: { duration: 28, repeat: Infinity, ease: "easeInOut" },
-                  y: { duration: 28, repeat: Infinity, ease: "easeInOut" },
-                  opacity: { duration: 1.5 }
-                }
-              : { duration: 0 }
-          }
-          className="absolute bottom-[-10%] right-[-10%] w-[55%] h-[55%] rounded-full bg-fuchsia-200/25 blur-[130px]"
-        />
-        <motion.div
-          animate={
-            isUnlocked
-              ? { x: [0, 30, -30, 0], y: [0, 30, -30, 0], opacity: 1 }
-              : { opacity: 0 }
-          }
-          transition={
-            isUnlocked
-              ? {
-                  x: { duration: 22, repeat: Infinity, ease: "easeInOut" },
-                  y: { duration: 22, repeat: Infinity, ease: "easeInOut" },
-                  opacity: { duration: 1.5 }
-                }
-              : { duration: 0 }
-          }
-          className="absolute top-1/2 left-1/3 w-[40%] h-[40%] rounded-full bg-amber-100/30 blur-[120px]"
-        />
-        
-        {/* Floating dust/particles */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isUnlocked ? { opacity: 1 } : { opacity: 0 }}
@@ -186,20 +156,21 @@ export const Dashboard = () => {
         </motion.div>
       </div>
 
+
       {/* Main Interactive Book Selection Area */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-4xl px-4 flex-1">
+      <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-5xl px-4 flex-1">
         
         {/* Animated Books Grid */}
-        <div className="flex flex-row gap-12 md:gap-28 justify-center items-end w-full pb-3 mt-4">
+        <div className="flex flex-row gap-6 md:gap-16 justify-center items-end w-full pb-3 mt-4">
           
-          {/* BOOK 1: FOR YOU */}
+          {/* BOOK 1: FOR YOU (Story) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.4, y: 120 }}
             animate={
               selectedBook === 'story'
-                ? { x: xOffset, y: -20, scale: 2.3, zIndex: 50, filter: "blur(0px)", opacity: [1, 1, 0.2, 0] }
-                : selectedBook === 'kural'
-                ? { x: -80, y: 30, scale: 0.7, opacity: 0, filter: "blur(6px)", pointerEvents: "none" }
+                ? { x: offset, y: -20, scale: 2.3, zIndex: 50, filter: "blur(0px)", opacity: [1, 1, 0.2, 0] }
+                : selectedBook
+                ? { x: -120, y: 30, scale: 0.7, opacity: 0, filter: "blur(6px)", pointerEvents: "none" }
                 : isUnlocked
                 ? { x: 0, y: 0, scale: 1, opacity: 1, filter: "blur(0px)" }
                 : { opacity: 0, scale: 0.4, y: 120 }
@@ -235,14 +206,14 @@ export const Dashboard = () => {
             />
           </motion.div>
 
-          {/* BOOK 2: DIVYA KURAL */}
+          {/* BOOK 2: DIVYA KURAL (Thirukkural format) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.4, y: 120 }}
             animate={
               selectedBook === 'kural'
-                ? { x: -xOffset, y: -20, scale: 2.3, zIndex: 50, filter: "blur(0px)", opacity: [1, 1, 0.2, 0] }
-                : selectedBook === 'story'
-                ? { x: 80, y: 30, scale: 0.7, opacity: 0, filter: "blur(6px)", pointerEvents: "none" }
+                ? { x: 0, y: -20, scale: 2.3, zIndex: 50, filter: "blur(0px)", opacity: [1, 1, 0.2, 0] }
+                : selectedBook
+                ? { x: selectedBook === 'story' ? 120 : -120, y: 30, scale: 0.7, opacity: 0, filter: "blur(6px)", pointerEvents: "none" }
                 : isUnlocked
                 ? { x: 0, y: 0, scale: 1, opacity: 1, filter: "blur(0px)" }
                 : { opacity: 0, scale: 0.4, y: 120 }
@@ -278,6 +249,49 @@ export const Dashboard = () => {
             />
           </motion.div>
 
+          {/* BOOK 3: OUR PLAYLIST (Music player book) */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.4, y: 120 }}
+            animate={
+              selectedBook === 'playlist'
+                ? { x: -offset, y: -20, scale: 2.3, zIndex: 50, filter: "blur(0px)", opacity: [1, 1, 0.2, 0] }
+                : selectedBook
+                ? { x: 120, y: 30, scale: 0.7, opacity: 0, filter: "blur(6px)", pointerEvents: "none" }
+                : isUnlocked
+                ? { x: 0, y: 0, scale: 1, opacity: 1, filter: "blur(0px)" }
+                : { opacity: 0, scale: 0.4, y: 120 }
+            }
+            transition={
+              selectedBook
+                ? { duration: 0.95, ease: [0.25, 1, 0.5, 1] }
+                : { 
+                    type: "spring", 
+                    stiffness: 60, 
+                    damping: 14, 
+                    delay: 0.7 
+                  }
+            }
+            onMouseEnter={() => !selectedBook && setHoveredBook('playlist')}
+            onMouseLeave={() => !selectedBook && setHoveredBook(null)}
+            className="z-10"
+          >
+            <Book3D
+              title="காதல் இசை"
+              subtitle="Our Playlist"
+              author="For Divya"
+              tagline="Our soundtrack"
+              coverGradient="bg-gradient-to-br from-violet-900 via-purple-900 to-indigo-950"
+              accentColor="purple"
+              icon={<Music className="w-6 h-6 text-purple-300 fill-purple-900/40" />}
+              insideHeader="Our Playlist"
+              insideText="Every beat of this music reminds me of your laughter and the beautiful harmony we share."
+              insideSign="Love, always 🎵"
+              onClick={() => handleSelect('playlist')}
+              hoverGlowClass="bg-purple-400/20"
+              isTransitioning={selectedBook === 'playlist'}
+            />
+          </motion.div>
+
         </div>
 
         {/* Glassmorphic Reading Shelf Pedestal */}
@@ -296,7 +310,7 @@ export const Dashboard = () => {
             damping: 15,
             delay: 0.2
           }}
-          className="w-full max-w-2xl h-3.5 bg-gradient-to-r from-transparent via-white/35 to-transparent backdrop-blur-[3px] border-y border-white/20 rounded-full shadow-[0_12px_28px_rgba(0,0,0,0.06)] relative z-0 flex items-center justify-center -mt-[32px] md:-mt-[34px]"
+          className="w-full max-w-3xl h-3.5 bg-gradient-to-r from-transparent via-white/35 to-transparent backdrop-blur-[3px] border-y border-white/20 rounded-full shadow-[0_12px_28px_rgba(0,0,0,0.06)] relative z-0 flex items-center justify-center -mt-[32px] md:-mt-[34px]"
         >
           <div className="w-[75%] h-[1px] bg-gradient-to-r from-transparent via-amber-300/40 to-transparent" />
           {/* Shadow underneath pedestal */}
@@ -328,12 +342,12 @@ export const Dashboard = () => {
               >
                 <div className="flex items-center gap-1">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin" style={{ animationDuration: '6s' }} />
-                  <span className="text-[11px] md:text-xs font-bold text-rose-955 tracking-[0.2em] font-serif uppercase">
+                  <span className="text-[11px] md:text-xs font-bold text-rose-200 tracking-[0.2em] font-serif uppercase">
                     Select a Book
                   </span>
                   <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-spin" style={{ animationDuration: '6s' }} />
                 </div>
-                <p className="text-xs text-rose-800/60 leading-relaxed font-serif italic max-w-sm">
+                <p className="text-xs text-rose-200/60 leading-relaxed font-serif italic max-w-sm">
                   Hover to inspect a book and read its inner dedication page. Tap or click to open.
                 </p>
               </motion.div>
@@ -346,14 +360,14 @@ export const Dashboard = () => {
                 transition={{ duration: 0.3 }}
                 className="flex flex-col items-center gap-1"
               >
-                <span className="text-xs md:text-sm font-bold text-rose-955 font-serif tracking-wider uppercase">
+                <span className="text-xs md:text-sm font-bold text-rose-200 font-serif tracking-wider uppercase">
                   Our Love Story Book
                 </span>
-                <p className="text-[11px] md:text-xs text-rose-800/75 leading-relaxed font-serif italic max-w-sm">
+                <p className="text-[11px] md:text-xs text-rose-300/80 leading-relaxed font-serif italic max-w-sm">
                   Read our memories, milestones, healing journeys, and what the future holds for us. Includes interactive cards and flip animations.
                 </p>
               </motion.div>
-            ) : (
+            ) : hoveredBook === 'kural' ? (
               <motion.div
                 key="kural"
                 initial={{ opacity: 0, y: 10 }}
@@ -362,11 +376,27 @@ export const Dashboard = () => {
                 transition={{ duration: 0.3 }}
                 className="flex flex-col items-center gap-1"
               >
-                <span className="text-xs md:text-sm font-bold text-amber-900 font-serif tracking-wider uppercase">
+                <span className="text-xs md:text-sm font-bold text-amber-300 font-serif tracking-wider uppercase">
                   திவ்யக்குறள் • Divya Kural Book
                 </span>
-                <p className="text-[11px] md:text-xs text-stone-700/80 leading-relaxed font-serif italic max-w-sm">
+                <p className="text-[11px] md:text-xs text-stone-300/80 leading-relaxed font-serif italic max-w-sm">
                   Poetic Tamil verses corresponding to vowel letters (அ, ஆ, இ...). Formatted as strict two-sentence couplets with dedicated definitions.
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="music"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col items-center gap-1"
+              >
+                <span className="text-xs md:text-sm font-bold text-purple-300 font-serif tracking-wider uppercase">
+                  காதல் இசை • Our Playlist Book
+                </span>
+                <p className="text-[11px] md:text-xs text-stone-300/80 leading-relaxed font-serif italic max-w-sm">
+                  Listen to our custom love song with interactive lyrics. Includes a premium rotating vinyl player and visualizer animations.
                 </p>
               </motion.div>
             )}
@@ -388,10 +418,11 @@ export const Dashboard = () => {
         transition={{ duration: 0.6, delay: 0.8 }}
         className="mb-6 z-10 select-none pointer-events-none text-center"
       >
-        <span className="text-[9px] md:text-[10px] text-rose-700/50 tracking-widest font-serif italic">
+        <span className="text-[9px] md:text-[10px] text-rose-300/50 tracking-widest font-serif italic">
           "Every page holds a piece of our heart"
         </span>
       </motion.div>
+
     </div>
   );
 };
