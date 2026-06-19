@@ -75,9 +75,10 @@ const BackgroundDecor = () => {
   );
 };
 
-// Helper: build a direct Google Drive streaming URL for audio file IDs.
-// Uses drive.usercontent.google.com directly — works on both dev and deployed (GitHub Pages).
-const gdrive = (id: string) => `https://drive.usercontent.google.com/download?id=${id}&export=download&authuser=0`;
+// Helper: build a Google Drive audio streaming URL.
+// Uses the open/uc endpoint which works in browser audio elements without CORS issues.
+const gdrive = (id: string) => `https://drive.google.com/uc?export=open&id=${id}`;
+
 
 
 // Configure your Google Drive audio file IDs here, mapped by image filename.
@@ -173,11 +174,14 @@ export const PLAYLIST_SONGS: Record<string, string | string[]> = {
   "veera": gdrive("1GLcnItQFzUXowW0ZdHxyfOvwonldwVti"),
   "zero": gdrive("1_8nEO6d6izwVAHagjJ8OcwLwHN6P_lzV")
 };
-
+// Check if a src string is a valid audio source (Google Drive URL)
 const isValidAudioSrc = (src: string | undefined): boolean => {
   if (!src) return false;
-  return src.startsWith("https://drive.usercontent.google.com") || src.startsWith("/gdrive/");
+  return src.startsWith("https://drive.google.com/uc") ||
+    src.startsWith("https://drive.usercontent.google.com") ||
+    src.startsWith("/gdrive/");
 };
+
 
 
 export const PlaylistLayout = () => {
